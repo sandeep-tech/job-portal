@@ -5,6 +5,7 @@ const AddJobForm = ({
   handleCompanyChange,
   formData,
   handleJobSubmit,
+  validator,
 }) => {
   return (
     <>
@@ -25,6 +26,9 @@ const AddJobForm = ({
             <option value="Remote">Remote</option>
             <option value="Intership">Intership</option>
           </select>
+          <span className="text-red-700">
+            {validator.current.message("type", formData.type, "required")}
+          </span>
         </div>
         <div class="mb-4">
           <label for="name" class="block text-gray-700 font-medium mb-2">
@@ -38,6 +42,9 @@ const AddJobForm = ({
             placeholder="eg. Beautiful Apartment In Miami"
             class="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:border-blue-400"
           />
+          <span className="text-red-700">
+            {validator.current.message("title", formData.title, "required")}
+          </span>
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 font-medium mb-2">
@@ -51,6 +58,13 @@ const AddJobForm = ({
             class="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:border-blue-400"
             rows="5"
           />
+          <span className="text-red-700">
+            {validator.current.message(
+              "description",
+              formData.description,
+              "required"
+            )}
+          </span>
         </div>
         <div class="mb-4">
           <label class="block text-gray-700 font-medium mb-2">Salary</label>
@@ -69,6 +83,9 @@ const AddJobForm = ({
             <option value="$100K - $125K">$100K - $125K</option>
             <option value="$125K - $150K">$125K - $150K</option>
           </select>
+          <span className="text-red-700">
+            {validator.current.message("salary", formData.salary, "required")}
+          </span>
         </div>
         <div class="mb-4">
           <label for="name" class="block text-gray-700 font-medium mb-2">
@@ -82,6 +99,13 @@ const AddJobForm = ({
             placeholder="Company Location"
             class="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:border-blue-400"
           />
+          <span className="text-red-700">
+            {validator.current.message(
+              "location",
+              formData.location,
+              "required|alpha"
+            )}
+          </span>
         </div>
         <h2 class="text-2xl font-medium mb-4">Company Info</h2>
         <div class="mb-4">
@@ -96,6 +120,13 @@ const AddJobForm = ({
             placeholder="Company Name"
             class="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:border-blue-400"
           />
+          <span className="text-red-700">
+            {validator.current.message(
+              "name",
+              formData.company.name,
+              "required"
+            )}
+          </span>
         </div>
         <div class="mb-4">
           <label for="age" class="block text-gray-700 font-medium mb-2">
@@ -109,6 +140,13 @@ const AddJobForm = ({
             rows="5"
             placeholder="What does your company do"
           />
+          <span className="text-red-700">
+            {validator.current.message(
+              "description",
+              formData.company.description,
+              "required"
+            )}
+          </span>
         </div>
         <div class="mb-4">
           <label for="name" class="block text-gray-700 font-medium mb-2">
@@ -122,6 +160,13 @@ const AddJobForm = ({
             placeholder="Email address for applicants"
             class="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:border-blue-400"
           />
+          <span className="text-red-700">
+            {validator.current.message(
+              "contactEmail",
+              formData.company.contactEmail,
+              "required|email"
+            )}
+          </span>
         </div>
         <div class="mb-4">
           <label for="name" class="block text-gray-700 font-medium mb-2">
@@ -135,6 +180,13 @@ const AddJobForm = ({
             placeholder="Optional phone for applicants"
             class="border border-gray-400 p-2 w-full rounded-lg focus:outline-none focus:border-blue-400"
           />
+          <span className="text-red-700">
+            {validator.current.message(
+              "contactPhone",
+              formData.company.contactPhone,
+              "required|numeric"
+            )}
+          </span>
         </div>
 
         <button

@@ -1,34 +1,60 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import JobComponent from "../component/jobComponent";
+import Pagination from "../component/pagination";
 import { addjobsData_Cart } from "../store/jobSlice";
 
 const Jobs = () => {
-  const [formData_Api, setFormData_Api] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [formData, setFormData] = useState([]); // For Job Component//
+  const [pageNo, setPageNo] = useState(1);
+  const [displayPerPageValue, setDisplayPerPageValue] = useState(6);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchPaginationData(1);
+  }, [displayPerPageValue]);
 
-  const fetchData = async () => {
+  const fetchPaginationData = async (page) => {
+    setPageNo(page);
     try {
-      const data = await fetch("http://localhost:8000/jobs", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
+      const data = await fetch(
+        "http://localhost:8000/jobs?_page=" +
+          page +
+          "&_per_page=" +
+          displayPerPageValue,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
       const json = await data.json();
-      dispatch(addjobsData_Cart(json));
-      setFormData_Api(json);
+      setTotalPages(json.pages);
+      // dispatch(addjobsData_Cart(json));
+      setFormData(json);
     } catch (error) {
       alert(error);
     }
   };
+
+  const handleNextPagination = () => {
+    fetchPaginationData(pageNo + 1);
+  };
+
+  const handlePreviousPagination = () => {
+    fetchPaginationData(pageNo - 1);
+  };
+
+  const displayPerPage = (e) => {
+    const { value } = e.target;
+    setDisplayPerPageValue(value);
+  };
+
   return (
     <>
       <div className="bg-slate-200 ">
         <div className="flex flex-wrap justify-center">
-          {formData_Api.map((data) => {
+          {formData.data?.map((data) => {
             return (
               <>
                 <JobComponent data={data} />
@@ -37,6 +63,16 @@ const Jobs = () => {
           })}
         </div>
       </div>
+      {console.log(displayPerPageValue)}
+      <Pagination
+        totalPages={totalPages}
+        handlePagination={fetchPaginationData}
+        handleNextPagination={handleNextPagination}
+        handlePreviousPagination={handlePreviousPagination}
+        pageNo={pageNo}
+        displayPerPage={displayPerPage}
+        displayPerPageValue={displayPerPageValue}
+      />
     </>
   );
 };

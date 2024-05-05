@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import AddJobForm from "../component/addJobForm";
 import { addjobsData_Cart } from "../store/jobSlice";
+import SimpleReactValidator from "simple-react-validator";
 
 const EditForm = () => {
   const [updateFormData, setUpdateFormData] = useState({
@@ -18,6 +19,9 @@ const EditForm = () => {
       contactPhone: "",
     },
   });
+
+  const [, forceUpdate] = useState();
+  const validator = useRef(new SimpleReactValidator());
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -62,6 +66,11 @@ const EditForm = () => {
   };
 
   const handleJobUpdate = async () => {
+    if (!validator.current.allValid()) {
+      validator.current.showMessages();
+      forceUpdate(1);
+      return;
+    }
     try {
       const data = await fetch("http://localhost:8000/jobs/" + id, {
         method: "PUT",
@@ -87,6 +96,7 @@ const EditForm = () => {
         handleCompanyChange={handleCompanyChange}
         formData={updateFormData}
         handleJobSubmit={handleJobUpdate}
+        validator={validator}
       />
     </>
   );

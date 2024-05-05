@@ -1,20 +1,27 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import AddJobForm from "../component/addJobForm";
+import SimpleReactValidator from "simple-react-validator";
+
+const initialFormData = {
+  title: "",
+  type: "",
+  description: "",
+  salary: "",
+  location: "",
+  company: {
+    name: "",
+    description: "",
+    contactEmail: "",
+    contactPhone: "",
+  },
+};
 
 const AddJobs = () => {
-  const [formData, setFormData] = useState({
-    title: "",
-    type: "",
-    description: "",
-    salary: "",
-    location: "",
-    company: {
-      name: "",
-      description: "",
-      contactEmail: "",
-      contactPhone: "",
-    },
-  });
+  const [, forceUpdate] = useState();
+
+  const [formData, setFormData] = useState(initialFormData);
+
+  const validator = useRef(new SimpleReactValidator());
 
   const handleJobChange = (e) => {
     const { value, name } = e.target;
@@ -30,6 +37,11 @@ const AddJobs = () => {
   };
 
   const handleAddJob = async () => {
+    if (!validator.current.allValid()) {
+      validator.current.showMessages();
+      forceUpdate(1);
+      return;
+    }
     try {
       const data = await fetch("http://localhost:8000/jobs", {
         method: "POST",
@@ -39,19 +51,7 @@ const AddJobs = () => {
       const json = await data.json();
       if (data.status == 201) {
         alert("job Added Sucessfully");
-        setFormData({
-          title: "",
-          type: "",
-          description: "",
-          salary: "",
-          location: "",
-          company: {
-            name: "",
-            description: "",
-            contactEmail: "",
-            contactPhone: "",
-          },
-        });
+        setFormData(initialFormData);
       }
     } catch (error) {
       alert(error);
@@ -60,12 +60,12 @@ const AddJobs = () => {
 
   return (
     <>
-      {console.log(formData)}
       <AddJobForm
         handleJobChange={handleJobChange}
         handleCompanyChange={handleCompanyChange}
         formData={formData}
         handleJobSubmit={handleAddJob}
+        validator={validator}
       />
     </>
   );
